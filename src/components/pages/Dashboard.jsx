@@ -4,6 +4,9 @@ import { db } from "../../firebase";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import LineChart from "../charts/LineChart";
 import DashboardCard from "../DashboardCard";
+import { FaBed } from "react-icons/fa";
+import { IoBedSharp } from "react-icons/io5";
+
 
 function Dashboard() {
   const [availableBeds, setAvailableBeds] = useState([]);
@@ -65,48 +68,34 @@ function Dashboard() {
   }, [selectedWardId]);
   let colour = "bg-red-100";
   return (
-    <div className="flex flex-col space-y-6 py-12 px-14">
-      <h6>Dashboard</h6>
+<div className="flex flex-col min-h-screen space-y-6 py-12 px-14 bg-gray-50">
+      <h1>Dashboard</h1>
 
-      <div className="flex flex-row space-x-6">
+      <div className="flex flex-row space-x-6 ">
         <DashboardCard
-          logo={<img src="logo.png" alt="Logo" />}
+          logo={<IoBedSharp size={50} />}
           title="Available beds:"
           subTitle={availableBeds.length}
+          buttonText="View"
         />
 
         <DashboardCard
-          logo="d"
-          title="Available beds:"
-          subTitle={availableBeds.length}
+          logo={<FaBed size={50} />}
+          title="Available beds In ward:"
+          subTitle={availableBedsInWard.length}
+          buttonText="View"
         />
+        
 
         <DashboardCard
           logo={<div>Patients </div>}
           title={"Patient"}
-          subTitle={"sub"}
         />
       </div>
 
-      {/* Display all available beds */}
-      <div className={`flex space-x-8`}>
-        <div className="w-2/5 h-[150px] bg-blue-200 border rounded-xl flex flex-col justify-center p-4  text-gray-600">
-          <span className="text-gray-500">
-            Available Beds: {availableBeds.length}
-          </span>
-          <Link to="/admission-page" className="btn-admit">
-            Admit
-          </Link>{" "}
-          {/* Add Admit button */}
-        </div>
-        <div className="w-2/5 h-[150px] border rounded flex flex-col justify-center p-4 text-gray-600">
-          <span className="text-gray-500">Patients In need of Beds: </span>
-        </div>
-      </div>
-
-      {/* Display available beds in a specific ward */}
-      <div className="flex space-x-8">
-        <div className="w-2/5 h-[150px] border rounded flex flex-col justify-center p-4 text-gray-600">
+    
+      <div className="flex space-x-8 ">
+        <div className="w-2/5 h-[150px] border rounded-xl flex flex-col justify-center p-4 text-gray-600 bg-white shadow-md">
           <span className="text-gray-500">Available Beds in Ward:</span>
           <select
             value={selectedWardId}
@@ -125,23 +114,16 @@ function Dashboard() {
           </span>
           <Link to="/admission-page" className="btn-admit">
             Admit
-          </Link>{" "}
+          </Link>
           {/* Add Admit button */}
         </div>
-        <div className="w-2/5 h-[150px] border rounded flex flex-col justify-center p-4 text-gray-600">
+        <div className="w-2/5 h-[150px] border rounded-xl flex flex-col justify-center p-4 text-gray-600 bg-white shadow-md">
           <li className="mt-4">Patients In need of Beds: </li>
         </div>
       </div>
 
-      <div className="flex space-x-8">
-        <h2>Real Time Bed status</h2>
+      <div className="flex space-x-8 bg-white border rounded-xl shadow-md ">
         <LineChart className="w-4/5" />
-      </div>
-
-      <div className="flex space-x-8">
-        <div className="w-2/5 h-[150px] border rounded flex flex-col justify-center p-4 text-gray-600">
-          <span className="text-gray-500">Available Patients: </span>
-        </div>
       </div>
     </div>
   );
