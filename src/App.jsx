@@ -7,6 +7,7 @@ import Dashboard from "./components/pages/Dashboard";
 import AdmissionPage from "./components/pages/AdmissionPage";
 import BedManagement from "./components/pages/BedManagement";
 import ConfirmAdmissionPage from "./components/pages/ConfirmAdmissionPage";
+import AdmissionManagement from "./components/pages/AdmissionManagement";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -24,6 +25,7 @@ function App() {
               path="/confirmAdmission/:patientId/:bedId"
               element={<ConfirmAdmissionPage />}
             />
+            <Route path="/admission-management" element={<AdmissionManagement/>} />
           </Routes>
         </main>
       </div>

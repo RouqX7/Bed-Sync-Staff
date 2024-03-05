@@ -6,10 +6,11 @@ import LineChart from "../charts/LineChart";
 import DashboardCard from "../DashboardCard";
 import { FaBed } from "react-icons/fa";
 import { IoBedSharp } from "react-icons/io5";
-
+import AvailableBedsCard from "../AvailableBedsCard.jsx";
 
 function Dashboard() {
   const [availableBeds, setAvailableBeds] = useState([]);
+  const [inNeedOfBeds,setInNeedOfBeds] = useState([])
   const [selectedWardId, setSelectedWardId] = useState("");
   const [availableBedsInWard, setAvailableBedsInWard] = useState([]);
   const [wards, setWards] = useState([]);
@@ -42,8 +43,25 @@ function Dashboard() {
       setWards(wardList);
     };
 
+    const fetchInNeedOfBeds = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8081/api/patients/inNeedOfBed"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch Patients In need of beds");
+        }
+        const data = await response.json();
+        setInNeedOfBeds(data);
+      } catch (error) {
+        console.error("Error fetching available beds:", error);
+      }
+    };
+
+
     fetchAvailableBeds();
     fetchWards();
+    fetchInNeedOfBeds();
   }, []);
 
   useEffect(() => {
@@ -66,64 +84,40 @@ function Dashboard() {
 
     fetchAvailableBedsInWard();
   }, [selectedWardId]);
+
   let colour = "bg-red-100";
   return (
-<div className="flex flex-col min-h-screen space-y-6 py-12 px-14 bg-gray-50">
+    <div className="flex flex-col min-h-screen space-y-6 py-12 px-14 bg-gray-50">
       <h1>Dashboard</h1>
 
-      <div className="flex flex-row space-x-6 ">
+      <div className="flex flex-row space-x-20 ">
         <DashboardCard
           logo={<IoBedSharp size={50} />}
-          title="Available beds:"
+          title="Available Beds In Hospital:"
           subTitle={availableBeds.length}
           buttonText="View"
         />
 
-        <DashboardCard
+    <AvailableBedsCard
+        wards={wards}
+        selectedWardId={selectedWardId}
+        setSelectedWardId={setSelectedWardId}
+        availableBedsInWard={availableBedsInWard}
+      />
+
+    <DashboardCard
           logo={<FaBed size={50} />}
-          title="Available beds In ward:"
-          subTitle={availableBedsInWard.length}
+          title="Patients In need of Bed :"
+          subTitle={inNeedOfBeds.length}
           buttonText="View"
         />
-        
-
-        <DashboardCard
-          logo={<div>Patients </div>}
-          title={"Patient"}
-        />
       </div>
 
-    
-      <div className="flex space-x-8 ">
-        <div className="w-2/5 h-[150px] border rounded-xl flex flex-col justify-center p-4 text-gray-600 bg-white shadow-md">
-          <span className="text-gray-500">Available Beds in Ward:</span>
-          <select
-            value={selectedWardId}
-            onChange={(e) => setSelectedWardId(e.target.value)}
-          >
-            <option value="">Select Ward</option>
-            {/* Render dropdown options for wards */}
-            {wards.map((ward) => (
-              <option key={ward.id} value={ward.id}>
-                {ward.name}
-              </option>
-            ))}
-          </select>
-          <span className="text-gray-500">
-            Total: {availableBedsInWard.length}
-          </span>
-          <Link to="/admission-page" className="btn-admit">
-            Admit
-          </Link>
-          {/* Add Admit button */}
-        </div>
-        <div className="w-2/5 h-[150px] border rounded-xl flex flex-col justify-center p-4 text-gray-600 bg-white shadow-md">
-          <li className="mt-4">Patients In need of Beds: </li>
-        </div>
-      </div>
+
+      
 
       <div className="flex space-x-8 bg-white border rounded-xl shadow-md ">
-        <LineChart className="w-4/5" />
+        <LineChart className="w-2/5" />
       </div>
     </div>
   );

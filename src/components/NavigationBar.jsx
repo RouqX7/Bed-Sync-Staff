@@ -23,9 +23,9 @@ const navLinks = [
       path: "/bed-management"
     },
     {
-      name: "Activity",
+      name: "Admission Management",
       icon: Clock3,
-      path: "/activity"
+      path: "/admission-management"
     },
     {
       name: "Help Center",
