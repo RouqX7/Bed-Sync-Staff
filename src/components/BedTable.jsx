@@ -3,6 +3,7 @@ import React from "react";
 function BedTable({
   beds,
   handleDischargePatient,
+  handleAdmitPatient, // New prop for handling admission
   selectedBed,
   selectedPatient,
   setSelectedBed,
@@ -10,12 +11,6 @@ function BedTable({
   setSelectedWard,
 }) {
   const isPatientAdmitted = selectedPatient && selectedPatient.admitted;
-
-  const handleAdmitPatient = (bed) => {
-    setSelectedBed(bed);
-    setSelectedWard(""); // Clear the selected ward when admitting a patient
-    setSelectedPatient(selectedPatient); // Set the selected patient to the previously selected patient
-  };
 
   return (
     <div className="overflow-x-auto">
@@ -29,8 +24,12 @@ function BedTable({
               Availability
             </th>
             <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              Clean
+            </th>
+            <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
               Patient
             </th>
+            
             <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
               Action
             </th>
@@ -59,6 +58,11 @@ function BedTable({
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-no-wrap">
+                <span className="text-sm leading-5 font-medium">
+                  {bed.clean ? "Yes" : "No"}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-no-wrap">
                 {bed.patientId &&
                 selectedPatient &&
                 selectedPatient.id === bed.patientId ? (
@@ -83,7 +87,7 @@ function BedTable({
                 )}
                 {bed.available && (
                   <button
-                    onClick={() => handleAdmitPatient(bed)}
+                    onClick={() => handleAdmitPatient(bed)} // Call the function passed from the parent
                     className={`text-indigo-600 hover:text-indigo-900 ${
                       isPatientAdmitted ? "opacity-50 cursor-not-allowed" : ""
                     }`}

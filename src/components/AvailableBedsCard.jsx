@@ -9,13 +9,13 @@ function AvailableBedsCard({
 }) {
   return (
     <div className="w-[400px] h-[300px] bg-blue-200 rounded-3xl flex flex-col justify-start items-start p-4 text-gray-600 bg-white shadow-md">
-      <span className="text-black text-3xl">Available Beds in Ward:</span>
+      <span className="text-black text-3xl mt-2">Available Beds in Ward:</span>
       <select
         value={selectedWardId}
         onChange={(e) => setSelectedWardId(e.target.value)}
-        className="mt-2"
+        className="mt-14"
       >
-        <option className="text-blue-300 rounded-2xl" value="">
+        <option className="text-blue-300 rounded-2xl " value="">
           Select Ward
         </option>
         {wards.map((ward) => (
@@ -24,10 +24,10 @@ function AvailableBedsCard({
           </option>
         ))}
       </select>
-      <span className="text-gray-500 mt-2">
+      <span className="text-black text-2xl mt-4">
         Total: {availableBedsInWard.length}
       </span>
-      <Link to="/admission-page" className="btn-admit mt-4">
+      <Link to="/admission-page" className="btn-admit text-black text-2xl mt-4">
         Admit
       </Link>
       {/* Add Admit button */}

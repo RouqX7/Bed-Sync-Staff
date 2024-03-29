@@ -8,6 +8,8 @@ import AdmissionPage from "./components/pages/AdmissionPage";
 import BedManagement from "./components/pages/BedManagement";
 import ConfirmAdmissionPage from "./components/pages/ConfirmAdmissionPage";
 import AdmissionManagement from "./components/pages/AdmissionManagement";
+import BedCleaningPage from "./components/pages/BedCleaningPage";
+import SignIn from "./components/pages/SignIn";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,6 +28,8 @@ function App() {
               element={<ConfirmAdmissionPage />}
             />
             <Route path="/admission-management" element={<AdmissionManagement/>} />
+            <Route path="/cleaning-page" element ={<BedCleaningPage/>} />
+            <Route path="/sign-in" element ={<SignIn />} />
           </Routes>
         </main>
       </div>
