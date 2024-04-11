@@ -10,6 +10,7 @@ import ConfirmAdmissionPage from "./components/pages/ConfirmAdmissionPage";
 import AdmissionManagement from "./components/pages/AdmissionManagement";
 import BedCleaningPage from "./components/pages/BedCleaningPage";
 import SignIn from "./components/pages/SignIn";
+import BedTransferPage from "./components/pages/BedTransferPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,7 +21,7 @@ function App() {
         <NavigationBar />
         <main className="grow">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admission-page" element={<AdmissionPage />} />
             <Route path="/bed-management" element={<BedManagement />} />
             <Route
@@ -29,7 +30,8 @@ function App() {
             />
             <Route path="/admission-management" element={<AdmissionManagement/>} />
             <Route path="/cleaning-page" element ={<BedCleaningPage/>} />
-            <Route path="/sign-in" element ={<SignIn />} />
+           <Route path="/bed-transfer" element = {<BedTransferPage />} /> 
+            <Route path="/" element ={<SignIn />} />
           </Routes>
         </main>
       </div>

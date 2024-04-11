@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import BedTable from "../BedTable";
+import { selectedHospitalState } from "../../atoms/atoms";
+import { useRecoilState } from "recoil";
+
 
 function AdmissionManagement() {
   const [patients, setPatients] = useState([]);
@@ -13,16 +16,34 @@ function AdmissionManagement() {
   const [wards, setWards] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalOpen, setModalOpen] = useState(false); // Changed initial state to false
+  const [selectedHospitalId, setSelectedHospitalId] = useRecoilState(
+    selectedHospitalState
+  );
+  
 
   useEffect(() => {
-    const fetchWards = async () => {
-      const wardCollection = collection(db, "wards");
-      const wardSnapshot = await getDocs(wardCollection);
-      const wardList = wardSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setWards(wardList);
+     const fetchWards = async () => {
+      try {
+        const wardsCollection = collection(db, "wards");
+    
+        // Build the query
+        let q = wardsCollection;
+        if (selectedHospitalId) {
+          q = query(q, where("hospitalId", "==", selectedHospitalId.id));
+        }
+    
+        // Execute the query
+        const wardsSnapshot = await getDocs(q);
+    
+        // Process the results
+        const wardsList = wardsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setWards(wardsList);
+      } catch (error) {
+        console.error("Error fetching wards:", error);
+      }
     };
 
     fetchWards();
@@ -52,30 +73,53 @@ function AdmissionManagement() {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await fetch("http://localhost:8081/api/patients/all");
-        if (!response.ok) {
-          throw new Error("Failed to fetch patients");
+        const patientsCollection = collection(db, "patients");
+        
+        let q = patientsCollection;
+        if (selectedHospitalId) {
+          q = query(q, where("hospitalId", "==", selectedHospitalId.id));
         }
-        const data = await response.json();
-        setPatients(data);
-        setSelectedPatient(data[0])
-        setFilteredPatients(data);
+        const querySnapshot = await getDocs(q);
+  
+        // Process the results
+        const patientsList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPatients(patientsList);
+        
+        // Set filtered patients
+        const filtered = patientsList.filter((patient) =>
+          `${patient.firstName} ${patient.lastName}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        );
+        setFilteredPatients(filtered);
       } catch (error) {
         console.error("Error fetching patients:", error);
       }
     };
-
+  
     fetchPatients();
-  }, []);
+  }, [selectedHospitalId, searchTerm]);
+  
+useEffect(() => {
+  // Filter patients based on search term
+  const filtered = patients.filter((patient) =>
+    `${patient.firstName} ${patient.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+  setFilteredPatients(filtered);
+}, [searchTerm, patients]);
 
-  useEffect(() => {
-    const filtered = patients.filter((patient) =>
-      `${patient.firstName} ${patient.lastName}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-    );
-    setFilteredPatients(filtered);
-  }, [searchTerm, patients]);
+// Setting selected patient
+useEffect(() => {
+  if (patients.length > 0) {
+    setSelectedPatient(patients[0]); // Selecting the first patient from the list
+  }
+}, [patients]);
+
 
   const handleWardChange = (event) => {
     setSelectedWard(event.target.value);

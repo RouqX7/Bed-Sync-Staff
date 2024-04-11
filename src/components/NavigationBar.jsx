@@ -27,42 +27,46 @@ function NavigationBar() {
 
   const handleLogout = async () => {
     try {
-      // Get the currently authenticated user
-      const user = auth.currentUser;
-  
-      if (user) {
+        // Get the currently authenticated user
+        const user = auth.currentUser;
+
         // Update the user document to set 'available' to false
-        await updateDoc(doc(db, "users", user.uid), {
-          available: false
-        });
-    
+        if (user) {
+            await updateDoc(doc(db, "users", user.uid), {
+                available: false
+            });
+        }
+
         // Sign out the user
         await auth.signOut();
-        
+
         // Clear local storage
-        localStorage.clear(); 
-    
+        localStorage.clear();
+
         // Redirect to sign-in page after logout
-        navigate("/sign-in"); 
-      } else {
-        console.error("No user is currently authenticated.");
-      }
+        navigate("/");
     } catch (error) {
-      console.error("Error logging out:", error.message);
+        console.error("Error logging out:", error.message);
     }
-  };
+};
+
   
 
   const navLinks = [
     {
       name: "Dashboard",
       icon: LayoutDashboard,
-      path: "/",
+      path: "/dashboard",
     },
     {
       name: "Bed Management",
       icon: BedDoubleIcon,
       path: "/bed-management",
+    },
+    {
+      name: "Cross Hospital Booking",
+      icon: BedDoubleIcon,
+      path: "/bed-transfer",
     },
     {
       name: "Admission Management",

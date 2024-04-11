@@ -43,7 +43,7 @@ const SignIn = () => {
         await updateDoc(userDocRef, { available: true });
 
         // Navigate the user to the dashboard
-        navigate("/");
+        navigate("/dashboard");
       } else {
         console.log("User document not found.");
       }

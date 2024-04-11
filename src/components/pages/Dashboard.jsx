@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import DashboardCard from "../DashboardCard";
-import { FaBed } from "react-icons/fa";
-import { IoBedSharp } from "react-icons/io5";
 import AvailableBedsCard from "../AvailableBedsCard.jsx";
 import WardCard from "../WardCcard.jsx";
 import DashCard from "../DashCard.jsx";
 import { selectedHospitalState } from "../../atoms/atoms.js";
 import { useRecoilState } from "recoil";
+import { getDoc } from "firebase/firestore";
+import HospitalSelection from "../HospitalSelection.jsx";
 
 function Dashboard() {
   const [availableBeds, setAvailableBeds] = useState([]);
@@ -25,7 +25,7 @@ function Dashboard() {
   const [nursesCount, setNursesCount] = useState(0);
   const [availableNursesCount, setAvailableNursesCount] = useState(0);
   const [unavailableNursesCount, setUnavailableNursesCount] = useState(0);
-  const [selectedHospital, setSelectedHospital] = useRecoilState(
+  const [selectedHospitalId, setSelectedHospitalId] = useRecoilState(
     selectedHospitalState
   );
 
@@ -61,34 +61,43 @@ function Dashboard() {
 
     // Fetch wards for dropdown
     const fetchWards = async () => {
-      const wardCollection = collection(db, "wards");
-      const wardSnapshot = await getDocs(wardCollection);
-      const wardList = wardSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setWards(wardList);
-    };
-
-    const fetchInNeedOfBeds = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8081/api/patients/inNeedOfBed"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch Patients In need of beds");
+        const wardsCollection = collection(db, "wards");
+
+        // Build the query
+        let q = wardsCollection;
+        if (selectedHospitalId) {
+          q = query(q, where("hospitalId", "==", selectedHospitalId.id));
         }
-        const data = await response.json();
-        setInNeedOfBeds(data);
+
+        // Execute the query
+        const wardsSnapshot = await getDocs(q);
+
+        // Process the results
+        const wardsList = wardsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setWards(wardsList);
       } catch (error) {
-        console.error("Error fetching available beds:", error);
+        console.error("Error fetching wards:", error);
       }
     };
 
     const fetchBeds = async () => {
       try {
         const bedsCollection = collection(db, "beds");
-        const bedsSnapshot = await getDocs(bedsCollection);
+
+        // Build the query
+        let q = bedsCollection;
+        if (selectedHospitalId) {
+          q = query(q, where("hospitalId", "==", selectedHospitalId.id));
+        }
+
+        // Execute the query
+        const bedsSnapshot = await getDocs(q);
+
+        // Process the results
         const bedsList = bedsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -101,8 +110,15 @@ function Dashboard() {
     const fetchPatients = async () => {
       try {
         const patientsCollection = collection(db, "patients");
-        const patientsSnapshot = await getDocs(patientsCollection);
-        const patientsList = patientsSnapshot.docs.map((doc) => ({
+
+        let q = patientsCollection;
+        if (selectedHospitalId) {
+          q = query(q, where("hospitalId", "==", selectedHospitalId.id));
+        }
+        const querySnapshot = await getDocs(q);
+
+        // Process the results
+        const patientsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
@@ -114,7 +130,6 @@ function Dashboard() {
 
     fetchAvailableBeds();
     fetchWards();
-    fetchInNeedOfBeds();
     fetchPatients();
     fetchBeds();
     fetchUsers();
@@ -288,11 +303,18 @@ function Dashboard() {
             />
           ))}
 
+          
+
+
           {/* <div className="flex space-x-8 bg-white border rounded-xl shadow-md ">
         <LineChart className="w-2/5" />
       </div> */}
         </div>
+
       </div>
+      {/* <div className="bg-white shadow-md rounded-xl p-6">
+      <HospitalSelection/>
+</div> */}
     </div>
   );
 }
