@@ -227,69 +227,74 @@ function Dashboard() {
     (patientsInNeedOfBedsCount / totalPatientsCount) * 100;
 
   return (
-    <div className="flex flex-col min-h-screen space-y-6 py-12 px-14 bg-gray-50">
-      <div className="bg-white shadow-md rounded-xl p-6 mb-6">
-        <h1 className="text-xl font-bold text-gray-800">Dashboard</h1>
-      </div>
+    <div className="flex flex-col min-h-screen space-y-6 py-12 px-14 bg-[#f8f7f7de]">
+  {/* Header Section */}
+  <div className="bg-white shadow-md rounded-xl p-6 mb-6">
+    <h1 className="text-xl font-bold text-gray-800">{selectedHospitalId.name}</h1>
+  </div>
 
-      <div className="bg-white shadow-md rounded-xl p-6">
-        <h1 className="text-lg font-bold mb-4">Hospital Stats</h1>
+  {/* Stats Container with Margin Adjustments */}
+  <div className="bg-white shadow-md rounded-xl p-6 max-w-fit ml-4"> {/* ml-4 for left margin */}
+    <h1 className="text-lg font-bold mb-4">Hospital Stats</h1>
 
-        <div className="flex flex-row space-x-20">
-          <DashCard
-            title="Beds:"
-            number={beds.length}
-            subTitle="Total Beds"
-            percentage={Math.round((numAvailableBeds / beds.length) * 100)}
-            primaryText={`Available: ${numAvailableBeds}`}
-            secondaryText={`Unavailable: ${numUnavailableBeds}`}
-            to="/admission-page"
-          />
+    {/* First Row of Cards */}
+    <div className="flex flex-wrap gap-3">
+      <DashCard
+        title="Beds:"
+        number={beds.length}
+        subTitle="Total Beds"
+        percentage={Math.round((numAvailableBeds / beds.length) * 100)}
+        primaryText={`Available: ${numAvailableBeds}`}
+        secondaryText={`Unavailable: ${numUnavailableBeds}`}
+        to="/admission-management"
+      />
 
-          <DashCard
-            title="Patients"
-            number={patients.length}
-            subTitle={"Admitted"}
-            primaryText={`Admitted: ${admittedPatients}`}
-            secondaryText={`Not Admitted: ${unAdmittedPatients}`}
-          />
-          <DashCard
-            title="Nurses:"
-            number={nursesTotalCount}
-            primaryText={`Available: ${availableNursesCount}`}
-            secondaryText={`Unavailable: ${unavailableNursesCount}`}
-            percentage={nursesPercentage}
-          />
-        </div>
+      <DashCard
+        title="Patients"
+        number={patients.length}
+        subTitle={"Admitted"}
+        primaryText={`Admitted: ${admittedPatients}`}
+        secondaryText={`Not Admitted: ${unAdmittedPatients}`}
+      />
+      <DashCard
+        title="Nurses:"
+        number={nursesTotalCount}
+        primaryText={`Available: ${availableNursesCount}`}
+        secondaryText={`Unavailable: ${unavailableNursesCount}`}
+        percentage={nursesPercentage}
+      />
+    </div>
 
-        <div className="flex flex-row space-x-20">
-          <DashCard
-            title="Beds In need of cleaning:"
-            number={bedsInNeedOfCleaning}
-            subTitle="Dirty Beds"
-            primaryText={`Clean: ${cleanBedsCount}`}
-            secondaryText={`Dirty: ${dirtyBedsCount}`}
-            percentage={dirtyBedsPercentage.toFixed(0)}
-            to="/cleaning-page"
-          />
+    {/* Second Row of Cards */}
+    <div className="flex flex-wrap gap-3 mt-4">
+      <DashCard
+        title="Beds In need of cleaning:"
+        number={bedsInNeedOfCleaning}
+        subTitle="Dirty Beds"
+        primaryText={`Clean: ${cleanBedsCount}`}
+        secondaryText={`Dirty: ${dirtyBedsCount}`}
+        percentage={dirtyBedsPercentage.toFixed(0)}
+        to="/cleaning-page"
+      />
 
-          <DashCard
-            title="Patients In need of Bed:"
-            number={patientsInNeedOfBedsCount}
-            primaryText={`Patients in Need: ${patientsInNeedOfBedsCount}`}
-            secondaryText={`Total Patients: ${totalPatientsCount}`}
-            percentage={patientsInNeedOfBedsPercentage.toFixed(0)}
-          />
+      <DashCard
+        title="Patients In need of Bed:"
+        number={patientsInNeedOfBedsCount}
+        primaryText={`Patients in Need: ${patientsInNeedOfBedsCount}`}
+        secondaryText={`Total Patients: ${totalPatientsCount}`}
+        percentage={patientsInNeedOfBedsPercentage.toFixed(0)}
+      />
 
-          <DashCard
-            title="Doctors:"
-            number={doctorsCount} // Display the total count of doctors
-            primaryText={`Available: ${availableDoctorsCount}`}
-            secondaryText={`Unavailable: ${unavailableDoctorsCount}`}
-            percentage={doctorsPercentage}
-          />
-        </div>
-      </div>
+      <DashCard
+        title="Doctors:"
+        number={doctorsCount}
+        primaryText={`Available: ${availableDoctorsCount}`}
+        secondaryText={`Unavailable: ${unavailableDoctorsCount}`}
+        percentage={doctorsPercentage}
+      />
+    </div>
+</div>
+
 
       <div className="bg-white shadow-md rounded-xl p-6">
         <div className="flex flex-row space-x-10">
