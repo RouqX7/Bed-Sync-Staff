@@ -109,9 +109,10 @@ function BedTransferPage() {
   };
 
   return (
-    <div>
-      <h2>Bed Transfer Page</h2>
-
+    <div className="flex flex-col min-h-screen space-y-6 py-8 px-14 bg-[#f8f7f7de]">
+<div className="bg-white shadow-md rounded-xl p-6 mb-6 ">
+    <h1 className="text-xl font-bold text-gray-800">Bed Transfer Page</h1>
+  </div>
       <div>
         <label htmlFor="hospital">Select Hospital:</label>
         <select

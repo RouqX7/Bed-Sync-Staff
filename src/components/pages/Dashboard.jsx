@@ -234,7 +234,7 @@ function Dashboard() {
   </div>
 
   {/* Stats Container with Margin Adjustments */}
-  <div className="bg-white shadow-md rounded-xl p-6 max-w-fit ml-4"> {/* ml-4 for left margin */}
+  <div className="bg-white shadow-md rounded-xl p-6 max-w-fit "> {/* ml-4 for left margin */}
     <h1 className="text-lg font-bold mb-4">Hospital Stats</h1>
 
     {/* First Row of Cards */}
@@ -296,30 +296,29 @@ function Dashboard() {
 </div>
 
 
-      <div className="bg-white shadow-md rounded-xl p-6">
-        <div className="flex flex-row space-x-10">
-          {wards.map((ward) => (
-            <WardCard
-              key={ward.id}
-              ward={ward}
-              totalBeds={ward.totalBeds}
-              currentOccupancy={ward.currenctOccupancy}
-              availableBeds={ward.availableBeds}
-            />
-          ))}
+<div className="bg-white shadow-md rounded-xl p-6">
+  {/* Container for WardCards */}
+  <div className="flex flex-wrap gap-4 max-w-[calc(100%_-_0%)] mx-auto px-4">
+    {wards.map((ward) => (
+      <WardCard
+        key={ward.id}
+        ward={ward}
+        totalBeds={ward.totalBeds}
+        currentOccupancy={ward.currentOccupancy}
+        availableBeds={ward.availableBeds}
+      />
+    ))}
+  </div>
+</div>
 
-          
 
 
-          {/* <div className="flex space-x-8 bg-white border rounded-xl shadow-md ">
-        <LineChart className="w-2/5" />
-      </div> */}
-        </div>
 
-      </div>
-      {/* <div className="bg-white shadow-md rounded-xl p-6">
-      <HospitalSelection/>
-</div> */}
+
+<div className="bg-white shadow-md rounded-xl p-6 max-w-sm ">
+  <HospitalSelection />
+</div>
+
     </div>
   );
 }

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import { Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { selectedHospitalState } from "../atoms/atoms";
 
 function HospitalSelection() {
   const [hospitals, setHospitals] = useState([]);
-  const [selectedHospitalId, setSelectedHospitalId] = useRecoilState(selectedHospitalState);
+  const [selectedHospitalId, setSelectedHospitalId] = useState("");
   const [selectedHospital, setSelectedHospital] = useState(null);
 
   useEffect(() => {
@@ -30,7 +27,9 @@ function HospitalSelection() {
 
   useEffect(() => {
     if (selectedHospitalId) {
-      const hospital = hospitals.find(hospital => hospital.id === selectedHospitalId);
+      const hospital = hospitals.find(
+        (hospital) => hospital.id === selectedHospitalId
+      );
       setSelectedHospital(hospital);
     }
   }, [selectedHospitalId, hospitals]);
@@ -41,12 +40,16 @@ function HospitalSelection() {
   };
 
   return (
-    <div>
-      <label htmlFor="hospitalSelect">Select a Hospital:</label>
+    <div className="p-6 bg-gray-50 rounded-lg shadow-md w-full max-w-[700px]">
+      <h1 className="text-xl font-bold mb-4">View All Hospitals</h1>
+      <label htmlFor="hospitalSelect" className="block mb-2 text-xl font-semibold">
+        Select a Hospital:
+      </label>
       <select
         id="hospitalSelect"
         value={selectedHospitalId}
         onChange={handleHospitalChange}
+        className="w-full p-2 mb-4 bg-gray-100 text-xl border rounded-md shadow-sm focus:outline-none focus:border-blue-500"
       >
         <option value="">Select Hospital</option>
         {hospitals.map((hospital) => (
@@ -55,16 +58,22 @@ function HospitalSelection() {
           </option>
         ))}
       </select>
-      
-      {/* Display selected hospital details if available */}
+
       {selectedHospital && (
-        <div>
-          <h2>{selectedHospital.name}</h2>
-          <p>Location: {selectedHospital.location}</p>
-          <p>Total Beds: {selectedHospital.totalBeds}</p>
-          <p>Available Beds: {selectedHospital.availableBeds}</p>
-          <p>Current Occupancy: {selectedHospital.currentOccupancy}</p>
-          <Link to={`/next-page/${selectedHospital.id}`}>Next Page</Link>
+        <div className="bg-gray-100 rounded-md p-4 shadow-md">
+          <h2 className="text-2xl font-bold mb-2">{selectedHospital.name}</h2>
+          <p className="text-black font-semibold  mb-2 text-xl">Location: {selectedHospital.location}</p>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <p className="text-black font-semibold text-xl">Total Beds: {selectedHospital.totalBeds}</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-black font-semibold text-xl">Available Beds: {selectedHospital.availableBeds}</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-black font-semibold text-xl">Current Occupancy: {selectedHospital.currentOccupancy}</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

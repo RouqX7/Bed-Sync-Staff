@@ -192,9 +192,10 @@ useEffect(() => {
   
 
   return (
-    <div className="flex flex-col space-y-6 py-12 px-14">
-      <h2> Admission Management </h2>
-
+    <div className="flex flex-col min-h-screen space-y-6 py-8 px-14 bg-[#f8f7f7de]">
+<div className="bg-white shadow-md rounded-xl p-6 mb-6">
+    <h1 className="text-xl font-bold text-gray-800">Admission Management</h1>
+  </div>
       <div>
         <label htmlFor="ward">Select Ward:</label>
         <select id="ward" value={selectedWard} onChange={handleWardChange}>
@@ -216,7 +217,7 @@ useEffect(() => {
       />
 
       <div className="border rounded p-4">
-        <h3>Filtered Patients</h3>
+        <h3> Patient</h3>
         <select
           value={selectedPatient ? selectedPatient.id : ""}
           onChange={(event) => {
@@ -236,12 +237,12 @@ useEffect(() => {
           ))}
         </select>
 
-        {selectedPatient && (
+        {/* {selectedPatient && (
           <div>
             Selected Patient:{" "}
             {`${selectedPatient.firstName} ${selectedPatient.lastName}`}
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="border rounded p-4">
