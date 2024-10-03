@@ -1,7 +1,6 @@
 // App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import "./App.css";
 import NavigationBar from "./components/NavigationBar";
 import Dashboard from "./components/pages/Dashboard";
 import AdmissionPage from "./components/pages/AdmissionPage";
@@ -11,6 +10,7 @@ import AdmissionManagement from "./components/pages/AdmissionManagement";
 import BedCleaningPage from "./components/pages/BedCleaningPage";
 import SignIn from "./components/pages/SignIn";
 import BedTransferPage from "./components/pages/BedTransferPage";
+import Patients from "./components/pages/Patients";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,6 +31,7 @@ function App() {
             <Route path="/admission-management" element={<AdmissionManagement/>} />
             <Route path="/cleaning-page" element ={<BedCleaningPage/>} />
            <Route path="/bed-transfer" element = {<BedTransferPage />} /> 
+           <Route path = "patients" element = {<Patients />} />
             <Route path="/" element ={<SignIn />} />
           </Routes>
         </main>

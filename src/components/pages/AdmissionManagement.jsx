@@ -5,7 +5,6 @@ import BedTable from "../BedTable";
 import { selectedHospitalState } from "../../atoms/atoms";
 import { useRecoilState } from "recoil";
 
-
 function AdmissionManagement() {
   const [patients, setPatients] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState([]);
@@ -15,27 +14,22 @@ function AdmissionManagement() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [wards, setWards] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [modalOpen, setModalOpen] = useState(false); // Changed initial state to false
+  const [modalOpen, setModalOpen] = useState(false); 
   const [selectedHospitalId, setSelectedHospitalId] = useRecoilState(
     selectedHospitalState
   );
-  
 
   useEffect(() => {
-     const fetchWards = async () => {
+    const fetchWards = async () => {
       try {
         const wardsCollection = collection(db, "wards");
-    
-        // Build the query
+
         let q = wardsCollection;
         if (selectedHospitalId) {
           q = query(q, where("hospitalId", "==", selectedHospitalId.id));
         }
-    
-        // Execute the query
+
         const wardsSnapshot = await getDocs(q);
-    
-        // Process the results
         const wardsList = wardsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -47,7 +41,7 @@ function AdmissionManagement() {
     };
 
     fetchWards();
-  }, []);
+  }, [selectedHospitalId]);
 
   useEffect(() => {
     if (selectedWard) {
@@ -74,21 +68,19 @@ function AdmissionManagement() {
     const fetchPatients = async () => {
       try {
         const patientsCollection = collection(db, "patients");
-        
+
         let q = patientsCollection;
         if (selectedHospitalId) {
           q = query(q, where("hospitalId", "==", selectedHospitalId.id));
         }
         const querySnapshot = await getDocs(q);
-  
-        // Process the results
+
         const patientsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setPatients(patientsList);
-        
-        // Set filtered patients
+
         const filtered = patientsList.filter((patient) =>
           `${patient.firstName} ${patient.lastName}`
             .toLowerCase()
@@ -99,27 +91,18 @@ function AdmissionManagement() {
         console.error("Error fetching patients:", error);
       }
     };
-  
+
     fetchPatients();
   }, [selectedHospitalId, searchTerm]);
-  
-useEffect(() => {
-  // Filter patients based on search term
-  const filtered = patients.filter((patient) =>
-    `${patient.firstName} ${patient.lastName}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
-  setFilteredPatients(filtered);
-}, [searchTerm, patients]);
 
-// Setting selected patient
-useEffect(() => {
-  if (patients.length > 0) {
-    setSelectedPatient(patients[0]); // Selecting the first patient from the list
-  }
-}, [patients]);
-
+  useEffect(() => {
+    const filtered = patients.filter((patient) =>
+      `${patient.firstName} ${patient.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+    setFilteredPatients(filtered);
+  }, [searchTerm, patients]);
 
   const handleWardChange = (event) => {
     setSelectedWard(event.target.value);
@@ -174,28 +157,25 @@ useEffect(() => {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to admit patient to bed");
       }
-  
+
       console.log("Patient admitted to bed:", selectedBed);
-      // You may want to update the UI or fetch updated data after admitting the patient
-      // For example, refetch the list of patients and beds
-      // Once confirmed, close the modal
+
       setModalOpen(false);
     } catch (error) {
       console.error("Error admitting patient to bed:", error);
-      // Handle the error as needed
     }
   };
-  
 
   return (
     <div className="flex flex-col min-h-screen space-y-6 py-8 px-14 bg-[#f8f7f7de]">
-<div className="bg-white shadow-md rounded-xl p-6 mb-6">
-    <h1 className="text-xl font-bold text-gray-800">Admission Management</h1>
-  </div>
+      <div className="bg-white shadow-md rounded-xl p-6 mb-6">
+        <h1 className="text-xl font-bold text-gray-800">Admission Management</h1>
+      </div>
+
       <div>
         <label htmlFor="ward">Select Ward:</label>
         <select id="ward" value={selectedWard} onChange={handleWardChange}>
@@ -218,6 +198,20 @@ useEffect(() => {
 
       <div className="border rounded p-4">
         <h3> Patient</h3>
+        {searchTerm && filteredPatients.length > 0 && (
+          <div className="border mt-2 p-2 max-h-48 overflow-y-auto">
+            {filteredPatients.map((patient) => (
+              <div
+                key={patient.id}
+                onClick={() => setSelectedPatient(patient)}
+                className="p-2 hover:bg-gray-200 cursor-pointer"
+              >
+                {`${patient.firstName} ${patient.lastName}`}
+              </div>
+            ))}
+          </div>
+        )}
+
         <select
           value={selectedPatient ? selectedPatient.id : ""}
           onChange={(event) => {
@@ -236,13 +230,6 @@ useEffect(() => {
             </option>
           ))}
         </select>
-
-        {/* {selectedPatient && (
-          <div>
-            Selected Patient:{" "}
-            {`${selectedPatient.firstName} ${selectedPatient.lastName}`}
-          </div>
-        )} */}
       </div>
 
       <div className="border rounded p-4">
@@ -264,21 +251,24 @@ useEffect(() => {
           <div className="bg-white p-8 rounded-lg">
             <h2 className="text-lg font-semibold mb-4">Confirm Assignment</h2>
             <p>
-              You are about to assign {selectedPatient ? selectedPatient.firstName : "No Patient"}{" "}
-              {selectedPatient ? selectedPatient.lastName : "NO PATIENT"} to bed {selectedBed ? selectedBed.bedNumber : "NO BED"} in ward{" "}
+              You are about to assign{" "}
+              {selectedPatient ? selectedPatient.firstName : "No Patient"}{" "}
+              {selectedPatient ? selectedPatient.lastName : "NO PATIENT"} to bed{" "}
+              {selectedBed ? selectedBed.bedNumber : "NO BED"} in ward{" "}
               {selectedWard}. Are you sure you want to proceed?
             </p>
             <div className="mt-4">
               <p>Bed Assignment Details:</p>
               <p>
-                <strong>Patient Name:</strong> {selectedPatient ? selectedPatient.firstName : "NO FIRSTNAME"}{" "}
+                <strong>Patient Name:</strong>{" "}
+                {selectedPatient ? selectedPatient.firstName : "NO FIRSTNAME"}{" "}
                 {selectedPatient ? selectedPatient.lastName : "NO LASTNAME"}
               </p>
               <p>
                 <strong>Bed ID:</strong> {selectedBed ? selectedBed.id : "NO BED"}
               </p>
               <p>
-                <strong>Ward:</strong> {selectedWard? selectedWard : "NO WARD"}
+                <strong>Ward:</strong> {selectedWard ? selectedWard : "NO WARD"}
               </p>
               <p>
                 <strong>Assignment Date:</strong> {new Date().toLocaleString()}

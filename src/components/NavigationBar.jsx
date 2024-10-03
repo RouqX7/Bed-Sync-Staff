@@ -13,6 +13,9 @@ import {
   ArrowRightLeftIcon,
   HelpCircleIcon,
   BedDoubleIcon,
+  Users,
+  Paintbrush ,
+  
 } from "lucide-react";
 
 const variants = {
@@ -59,19 +62,26 @@ function NavigationBar() {
       path: "/dashboard",
     },
     {
-      name: "Bed Management",
-      icon: BedDoubleIcon,
-      path: "/bed-management",
+      name: "Patients",
+      icon: Users,
+      path:"/patients"
+
     },
     {
       name: "Cross Hospital Booking",
       icon: BedDoubleIcon,
       path: "/bed-transfer",
     },
+    
     {
       name: "Admission Management",
       icon: Clock3,
       path: "/admission-management",
+    },
+    {
+      name:"Bed Cleaning",
+      icon: Paintbrush,
+      path: "/cleaning-page"
     },
     {
       name: "Help Center",

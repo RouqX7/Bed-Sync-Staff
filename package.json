@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.1",
-    "firebase": "^10.13.0",
+    "firebase": "^10.13.1",
     "framer-motion": "^11.0.5",
     "lucide-react": "^0.331.0",
     "react": "^18.2.0",

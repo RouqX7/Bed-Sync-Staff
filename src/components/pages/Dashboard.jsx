@@ -156,6 +156,7 @@ function Dashboard() {
   }, [selectedWardId]);
 
   useEffect(() => {
+    // Doctor and nurse count
     const doctors = users.filter((user) => user.role === "doctor");
     const nurses = users.filter((user) => user.role === "nurse");
 
@@ -202,11 +203,13 @@ function Dashboard() {
       ? ((availableDoctorsCount / doctorsTotalCount) * 100).toFixed(2)
       : 0;
 
+  // Count of available/unavailable beds
   const numAvailableBeds = beds.filter((bed) => bed.available).length;
   const numUnavailableBeds = beds.length - numAvailableBeds;
   const admittedPatients = patients.filter(
     (patients) => patients.admitted
   ).length;
+
   const unAdmittedPatients = patients.length - admittedPatients;
   const bedsInNeedOfCleaning = beds.filter((bed) => !bed.clean).length;
   const cleanBedsCount = beds.filter((bed) => bed.clean).length;
@@ -227,98 +230,97 @@ function Dashboard() {
     (patientsInNeedOfBedsCount / totalPatientsCount) * 100;
 
   return (
-    <div className="flex flex-col min-h-screen space-y-6 py-12 px-14 bg-[#f8f7f7de]">
-  {/* Header Section */}
-  <div className="bg-white shadow-md rounded-xl p-6 mb-6">
-    <h1 className="text-xl font-bold text-gray-800">{selectedHospitalId.name}</h1>
-  </div>
+    <div className="min-h-screen py-4 px-4 bg-[#f8f7f7de]">
+      <div className="bg-white shadow-md rounded-xl p-6 mb-6">
+        <h1 className="text-xl font-bold text-gray-800">
+          {selectedHospitalId.name}
+        </h1>
+      </div>
+      <div className="flex flex-col sm:flex-row space-x-0 sm:space-x-6 mb-6">
+        {/* Left Column: Hospital Stats */}
+        <div className="bg-white shadow-md rounded-xl p-4 sm:p-6 max-w-full sm:max-w-[70%] overflow-auto">
+          <h1 className="text-lg font-bold mb-4">Hospital Stats</h1>
 
-  {/* Stats Container with Margin Adjustments */}
-  <div className="bg-white shadow-md rounded-xl p-6 max-w-fit "> {/* ml-4 for left margin */}
-    <h1 className="text-lg font-bold mb-4">Hospital Stats</h1>
+          {/* Horizontal scrolling on small screens */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 overflow-x-auto sm:overflow-x-hidden">
+            <DashCard
+              title="Beds:"
+              number={beds.length}
+              subTitle="Total Beds"
+              percentage={Math.round((numAvailableBeds / beds.length) * 100)}
+              primaryText={`Available: ${numAvailableBeds}`}
+              secondaryText={`Unavailable: ${numUnavailableBeds}`}
+              to="/admission-management"
+            />
+            <DashCard
+              title="Patients"
+              number={patients.length}
+              subTitle={"Admitted"}
+              primaryText={`Admitted: ${admittedPatients}`}
+              secondaryText={`Not Admitted: ${unAdmittedPatients}`}
+            />
+            <DashCard
+              title="Nurses:"
+              number={nursesTotalCount}
+              primaryText={`Available: ${availableNursesCount}`}
+              secondaryText={`Unavailable: ${unavailableNursesCount}`}
+              percentage={nursesPercentage}
+            />
+            <DashCard
+              title="Beds In need of cleaning:"
+              number={bedsInNeedOfCleaning}
+              subTitle="Dirty Beds"
+              primaryText={`Clean: ${cleanBedsCount}`}
+              secondaryText={`Dirty: ${dirtyBedsCount}`}
+              percentage={dirtyBedsPercentage.toFixed(0)}
+              to="/cleaning-page"
+            />
+            <DashCard
+              title="Patients In need of Bed:"
+              number={patientsInNeedOfBedsCount}
+              primaryText={`Patients in Need: ${patientsInNeedOfBedsCount}`}
+              secondaryText={`Total Patients: ${totalPatientsCount}`}
+              percentage={patientsInNeedOfBedsPercentage.toFixed(0)}
+            />
+            <DashCard
+              title="Doctors:"
+              number={doctorsCount}
+              primaryText={`Available: ${availableDoctorsCount}`}
+              secondaryText={`Unavailable: ${unavailableDoctorsCount}`}
+              percentage={doctorsPercentage}
+            />
+          </div>
+        </div>
 
-    {/* First Row of Cards */}
-    <div className="flex flex-wrap gap-3">
-      <DashCard
-        title="Beds:"
-        number={beds.length}
-        subTitle="Total Beds"
-        percentage={Math.round((numAvailableBeds / beds.length) * 100)}
-        primaryText={`Available: ${numAvailableBeds}`}
-        secondaryText={`Unavailable: ${numUnavailableBeds}`}
-        to="/admission-management"
-      />
+        {/* Right Column for Additional Information */}
+        <div className="flex-1 bg-white shadow-md rounded-xl p-6">
+          <h2 className="text-lg font-bold mb-4">Additional Information</h2>
+          <p>Future components can go here...</p>
+        </div>
+      </div>
 
-      <DashCard
-        title="Patients"
-        number={patients.length}
-        subTitle={"Admitted"}
-        primaryText={`Admitted: ${admittedPatients}`}
-        secondaryText={`Not Admitted: ${unAdmittedPatients}`}
-      />
-      <DashCard
-        title="Nurses:"
-        number={nursesTotalCount}
-        primaryText={`Available: ${availableNursesCount}`}
-        secondaryText={`Unavailable: ${unavailableNursesCount}`}
-        percentage={nursesPercentage}
-      />
-    </div>
+      {/* Second Row: Another Left and Right Columns */}
+      <div className="flex flex-col sm:flex-row space-x-0 sm:space-x-6">
+        {/* Left Column: Floors Overview */}
+        <div className="bg-white shadow-md rounded-xl p-4 sm:p-6 flex-1">
+          <h1 className="text-lg font-bold mb-4">Floors Overview</h1>
+          {/* Placeholder for floors overview component */}
+          <p>Content for floors overview will go here...</p>
+        </div>
 
-    {/* Second Row of Cards */}
-    <div className="flex flex-wrap gap-3 mt-4">
-      <DashCard
-        title="Beds In need of cleaning:"
-        number={bedsInNeedOfCleaning}
-        subTitle="Dirty Beds"
-        primaryText={`Clean: ${cleanBedsCount}`}
-        secondaryText={`Dirty: ${dirtyBedsCount}`}
-        percentage={dirtyBedsPercentage.toFixed(0)}
-        to="/cleaning-page"
-      />
+        {/* Right Column: Nurses On-Duty */}
+        <div className="bg-white shadow-md rounded-xl p-6 flex-1">
+          <h2 className="text-lg font-bold mb-4">Nurses On-Duty</h2>
+          {/* Placeholder for nurses on-duty component */}
+          <p>Content for nurses on-duty will go here...</p>
+        </div>
 
-      <DashCard
-        title="Patients In need of Bed:"
-        number={patientsInNeedOfBedsCount}
-        primaryText={`Patients in Need: ${patientsInNeedOfBedsCount}`}
-        secondaryText={`Total Patients: ${totalPatientsCount}`}
-        percentage={patientsInNeedOfBedsPercentage.toFixed(0)}
-      />
-
-      <DashCard
-        title="Doctors:"
-        number={doctorsCount}
-        primaryText={`Available: ${availableDoctorsCount}`}
-        secondaryText={`Unavailable: ${unavailableDoctorsCount}`}
-        percentage={doctorsPercentage}
-      />
-    </div>
-</div>
-
-
-<div className="bg-white shadow-md rounded-xl p-6">
-  {/* Container for WardCards */}
-  <div className="flex flex-wrap gap-4 max-w-[calc(100%_-_0%)] mx-auto px-4">
-    {wards.map((ward) => (
-      <WardCard
-        key={ward.id}
-        ward={ward}
-        totalBeds={ward.totalBeds}
-        currentOccupancy={ward.currentOccupancy}
-        availableBeds={ward.availableBeds}
-      />
-    ))}
-  </div>
-</div>
-
-
-
-
-
-<div className="bg-white shadow-md rounded-xl p-6 max-w-sm ">
-  <HospitalSelection />
-</div>
-
+        <div className="bg-white shadow-md rounded-xl p-6 flex-1">
+          <h2 className="text-lg font-bold mb-4">Nurses On-Duty</h2>
+          {/* Placeholder for nurses on-duty component */}
+          <p>Content for nurses on-duty will go here...</p>
+        </div>
+      </div>
     </div>
   );
 }
